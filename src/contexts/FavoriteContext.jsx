@@ -1,76 +1,68 @@
-import React, { createContext, useContext, useState, useEffect } from 'react'
+import { createContext, useContext, useState, useEffect } from "react"
 
-const FavoriteContext = createContext();
+const FavoriteContext = createContext()
 
-export const FavoriteProvider = ({ children }) => {
-    // localStorage'dan başlangıç değeri al
-    const [favorites, setFavorites] = useState(() => {
-        try {
-            const savedFavorites = localStorage.getItem('movieFavorites');
-            return savedFavorites ? JSON.parse(savedFavorites) : [];
-        } catch (error) {
-            console.error('localStorage okuma hatası:', error);
-            return [];
-        }
-    });
+export function FavoriteProvider({ children }) {
+  const [favorites, setFavorites] = useState([])
 
-    // favorites değiştiğinde localStorage'a kaydet
-    useEffect(() => {
-        try {
-            localStorage.setItem('movieFavorites', JSON.stringify(favorites));
-        } catch (error) {
-            console.error('localStorage yazma hatası:', error);
-        }
-    }, [favorites]);
-
-    const addToFavorites = (movie) => {
-        setFavorites(prev => {
-            const exists = prev.find(fav => fav.id === movie.id);
-            if (exists) return prev;
-            const newFavorites = [...prev, movie];
-            console.log('Film favorilere eklendi:', movie.title);
-            return newFavorites;
-        });
-    };
-
-    const removeFromFavorites = (movieId) => {
-        setFavorites(prev => {
-            const newFavorites = prev.filter(fav => fav.id !== movieId);
-            const removedMovie = prev.find(fav => fav.id === movieId);
-            if (removedMovie) {
-                console.log('Film favorilerden çıkarıldı:', removedMovie.title);
-            }
-            return newFavorites;
-        });
-    };
-
-    const isInFavorites = (movieId) => {
-        return favorites.some(fav => fav.id === movieId);
-    };
-
-    const clearFavorites = () => {
-        setFavorites([]);
-        console.log('Tüm favoriler temizlendi');
-    };
-
-    return (
-        <FavoriteContext.Provider value={{
-            favorites,
-            addToFavorites,
-            removeFromFavorites,
-            isInFavorites,
-            clearFavorites
-        }}>
-            {children}
-        </FavoriteContext.Provider>
-    );
-};
-
-// Custom hook
-export const useFavorites = () => {
-    const context = useContext(FavoriteContext);
-    if (!context) {
-        throw new Error('useFavorites must be used within FavoriteProvider');
+  // Load favorites from localStorage on mount
+  useEffect(() => {
+    const storedFavorites = localStorage.getItem("movieFavorites")
+    if (storedFavorites) {
+      try {
+        setFavorites(JSON.parse(storedFavorites))
+      } catch (error) {
+        console.error("Error loading favorites:", error)
+      }
     }
-    return context;
-};
+  }, [])
+
+  // Save favorites to localStorage whenever they change
+  useEffect(() => {
+    localStorage.setItem("movieFavorites", JSON.stringify(favorites))
+  }, [favorites])
+
+  const addToFavorites = (movie) => {
+    setFavorites((prev) => {
+      // Check if movie already exists
+      if (prev.some((fav) => fav.id === movie.id)) {
+        return prev
+      }
+      return [...prev, movie]
+    })
+  }
+
+  const removeFromFavorites = (movieId) => {
+    setFavorites((prev) => prev.filter((movie) => movie.id !== movieId))
+  }
+
+  const isInFavorites = (movieId) => {
+    return favorites.some((movie) => movie.id === movieId)
+  }
+
+  const clearFavorites = () => {
+    setFavorites([])
+  }
+
+  return (
+    <FavoriteContext.Provider
+      value={{
+        favorites,
+        addToFavorites,
+        removeFromFavorites,
+        isInFavorites,
+        clearFavorites,
+      }}
+    >
+      {children}
+    </FavoriteContext.Provider>
+  )
+}
+
+export function useFavorites() {
+  const context = useContext(FavoriteContext)
+  if (context === undefined) {
+    throw new Error("useFavorites must be used within a FavoriteProvider")
+  }
+  return context
+}

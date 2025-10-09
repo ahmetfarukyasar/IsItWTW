@@ -1,64 +1,65 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import { useEffect, useState } from "react"
+import axios from "axios"
 
-const API_KEY = import.meta.env.VITE_API_KEY;
+const API_KEY = import.meta.env.VITE_API_KEY
 
-function SearchFilter({ 
-  searchTerm, onSearchTermChange, 
-  selectedGenre, onGenreChange, 
-  selectedYear, onYearChange 
-}) {
-  const [genres, setGenres] = useState([]);
-  const [years, setYears] = useState([]);
+function SearchFilter({ searchTerm, onSearchTermChange, selectedGenre, onGenreChange, selectedYear, onYearChange }) {
+  const [genres, setGenres] = useState([])
+  const [years, setYears] = useState([])
 
   useEffect(() => {
-    axios.get(`https://api.themoviedb.org/3/genre/movie/list?api_key=${API_KEY}&language=en-US`)
-      .then(res => setGenres(res.data.genres))
-      .catch(console.error);
+    axios
+      .get(`https://api.themoviedb.org/3/genre/movie/list?api_key=${API_KEY}&language=en-US`)
+      .then((res) => setGenres(res.data.genres))
+      .catch(console.error)
 
-    const currentYear = new Date().getFullYear();
-    const yearArray = [];
+    const currentYear = new Date().getFullYear()
+    const yearArray = []
     for (let y = currentYear; y >= 1950; y--) {
-      yearArray.push(y);
+      yearArray.push(y)
     }
-    setYears(yearArray);
-  }, []);
+    setYears(yearArray)
+  }, [])
 
   return (
-    <div className='w-full flex flex-row items-center px-8 gap-4 mt-4 py-4'>
+    <div className="w-full flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4 mt-4 py-4">
       <input
         type="text"
-        className='bg-gray-800 text-white p-4 rounded-xl flex-grow'
+        className="bg-gray-800 text-white p-3 sm:p-4 rounded-xl flex-grow text-sm sm:text-base"
         placeholder="Search movies..."
         value={searchTerm}
-        onChange={e => onSearchTermChange(e.target.value)}
+        onChange={(e) => onSearchTermChange(e.target.value)}
       />
       <select
         name="genres"
         id="genres"
-        className="p-4 rounded-xl text-white bg-gray-800"
+        className="p-3 sm:p-4 rounded-xl text-white bg-gray-800 text-sm sm:text-base w-full sm:w-auto"
         value={selectedGenre}
-        onChange={e => onGenreChange(e.target.value)}
+        onChange={(e) => onGenreChange(e.target.value)}
       >
         <option value="">All Genres</option>
-        {genres.map(genre => (
-          <option key={genre.id} value={genre.id}>{genre.name}</option>
+        {genres.map((genre) => (
+          <option key={genre.id} value={genre.id}>
+            {genre.name}
+          </option>
         ))}
       </select>
       <select
         name="years"
         id="years"
-        className="p-4 rounded-xl text-white bg-gray-800"
+        className="p-3 sm:p-4 rounded-xl text-white bg-gray-800 text-sm sm:text-base w-full sm:w-auto"
         value={selectedYear}
-        onChange={e => onYearChange(e.target.value)}
+        onChange={(e) => onYearChange(e.target.value)}
       >
         <option value="">All Years</option>
-        {years.map(year => (
-          <option key={year} value={year}>{year}</option>
+        {years.map((year) => (
+          <option key={year} value={year}>
+            {year}
+          </option>
         ))}
       </select>
     </div>
-  );
+  )
 }
 
-export default SearchFilter;
+export default SearchFilter
