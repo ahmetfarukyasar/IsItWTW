@@ -1,0 +1,72 @@
+@import 'tailwindcss';
+
+:root {
+  --bg-primary: #292D48;
+  --bg-secondary: #33385a;
+  --bg-tertiary: #252845;
+  --text-primary: #ffffff;
+  --text-secondary: #a3a3a3;
+  --text-muted: #737373;
+  --accent-primary: #3b82f6;
+  --accent-secondary: #8b5cf6;
+  --border-primary: #525252;
+  --shadow-primary: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+  --shadow-secondary: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+}
+
+.dark {
+  --bg-primary: #1a1a1a;
+  --bg-secondary: #2d2d2d;
+  --bg-tertiary: #404040;
+  --text-primary: #ffffff;
+  --text-secondary: #a3a3a3;
+  --text-muted: #737373;
+}
+
+.light {
+  --bg-primary: #ffffff;
+  --bg-secondary: #f8fafc;
+  --bg-tertiary: #e2e8f0;
+  --text-primary: #1a1a1a;
+  --text-secondary: #64748b;
+  --text-muted: #94a3b8;
+}
+
+/* Özel glassmorphism efektleri */
+.glass {
+  background: rgba(45, 45, 45, 0.3);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.glass-hover:hover {
+  background: rgba(45, 45, 45, 0.5);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+/* Glow efektleri */
+.glow-blue {
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+}
+
+.glow-purple {
+  box-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
+}
+
+.dark {
+  --bg-primary: #1a1a1a;
+  --bg-secondary: #2d2d2d;
+  --bg-tertiary: #404040;
+  --text-primary: #ffffff;
+  --text-secondary: #a3a3a3;
+  --text-muted: #737373;
+}
+
+.light {
+  --bg-primary: #ffffff;
+  --bg-secondary: #f8fafc;
+  --bg-tertiary: #e2e8f0;
+  --text-primary: #1a1a1a;
+  --text-secondary: #64748b;
+  --text-muted: #94a3b8;
+}
