@@ -1,5 +1,6 @@
 import { useFavorites } from "../contexts/FavoriteContext"
 import MovieCard from "../components/MovieCard"
+import { Link } from "react-router-dom"
 
 const Favorites = () => {
   const { favorites, clearFavorites } = useFavorites()
@@ -11,9 +12,9 @@ const Favorites = () => {
           <h2 className="text-xl sm:text-2xl text-black font-mono mb-4">You do not have favorite movie yet.</h2>
           <p className="text-sm sm:text-base text-gray-400 font-mono">
             You can add your favorites from{" "}
-            <a href="/explore" className="font-semibold text-black">
+            <Link to="/explore" className="font-semibold text-black">
               explore
-            </a>{" "}
+            </Link>{" "}
             page.
           </p>
         </div>

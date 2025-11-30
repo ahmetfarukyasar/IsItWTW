@@ -1,10 +1,25 @@
-import { useState } from "react"
-import { Link, NavLink } from "react-router-dom"
-import logo from '../assets/iwtow.jpg'
-import { FaBars, FaXmark, FaGithub, FaInstagram, FaLinkedin } from "react-icons/fa6"
+import { useState } from "react";
+import { Link, NavLink, useNavigate } from "react-router-dom";
+import logo from '../assets/iwtow.jpg';
+import { FaBars, FaXmark, FaGithub, FaInstagram, FaLinkedin } from "react-icons/fa6";
+import useAuth from "../hooks/useAuth";
+import supabase from "../utils/supabase";
+import { LogIn, LogOut } from "lucide-react";
 
 const Navbar = () => {
-  const [menuOpen, setMenuOpen] = useState(false)
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [toast, setToast] = useState(null);
+  const user = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    const { error } = await supabase.auth.signOut();
+    if (error) {
+      setToast({ message:"Error: " + error.message, type: "error"});
+    } else {
+      navigate('/signin');
+    }
+  };
 
   const liLink = `
     flex p-4 px-6 rounded-xl items-center justify-center
@@ -14,7 +29,7 @@ const Navbar = () => {
     after:rounded-lg after:bg-gradient-to-r after:from-purple-400 after:via-pink-500 after:to-red-500
     after:opacity-0 after:blur-md after:transition-opacity after:duration-300
     hover:after:opacity-100
-  `
+  `;
 
   const liLinkActive = `
     flex p-4 px-6 rounded-xl items-center justify-center
@@ -23,14 +38,14 @@ const Navbar = () => {
     after:absolute after:-bottom-2 after:left-0 after:w-full after:h-1
     after:rounded-lg after:bg-gradient-to-r after:from-purple-400 after:via-pink-500 after:to-red-500
     after:opacity-100 after:blur-md after:transition-opacity after:duration-300
-  `
+  `;
 
   const navLinks = [
     { to: "/", text: "Home" },
     { to: "/explore", text: "Explore" },
     { to: "/favorites", text: "Favorites" },
     { to: "/about", text: "About" },
-  ]
+  ];
 
   return (
     <nav className="flex items-center justify-between px-6 md:px-16 py-4 bg-[var(--bg-primary)] relative">
@@ -44,18 +59,26 @@ const Navbar = () => {
         ))}
       </ul>
 
-      <div className="hidden md:flex flex-row gap-4">
+      <div className="hidden md:flex flex-row gap-4 items-center">
         <a href="https://github.com/ahmetfarukyasar" target="_blank" rel="noreferrer">
           <FaGithub size={28} color="white" />
         </a>
-        <a href="https://linkedin.com/in/ahmetfarukyasar" target="_blank" rel="noreferrer">
-          <FaLinkedin size={28} color="white" />
-        </a>
-        <a href="https://instagram.com/ahmetfarukysr" target="_blank" rel="noreferrer">
-          <FaInstagram size={28} color="white" />
-        </a>
+
+        {!user ? (
+          <Link to="/signin" className="text-white text-lg px-4 py-2 rounded-full hover:opacity-90 transition cursor-pointer">
+            <LogIn />
+          </Link>
+        ) : (
+          <button
+            onClick={handleLogout}
+            className="text-white text-lg px-4 py-2 bg-red-500/50 rounded-full hover:opacity-90 transition cursor-pointer"
+          >
+            <LogOut />
+          </button>
+        )}
       </div>
 
+      {/* Mobil menü */}
       <button className="md:hidden text-white z-50" onClick={() => setMenuOpen(!menuOpen)}>
         {menuOpen ? <FaXmark size={28} /> : <FaBars size={28} />}
       </button>
@@ -89,13 +112,24 @@ const Navbar = () => {
             <FaInstagram size={28} color="white" />
           </a>
         </div>
+
+        {!user ? (
+          <Link to="/signin" className="text-white text-lg">Sign In</Link>
+        ) : (
+          <button
+            onClick={handleLogout}
+            className="text-white text-lg px-4 py-2 bg-red-500/50 rounded-full hover:opacity-90 transition"
+          >
+            <LogOut />
+          </button>
+        )}
       </div>
 
       {menuOpen && (
         <div className="fixed inset-0 bg-black opacity-50 z-30 md:hidden" onClick={() => setMenuOpen(false)} />
       )}
     </nav>
-  )
+  );
 }
 
-export default Navbar
+export default Navbar;

@@ -7,6 +7,9 @@ import Favorites from './pages/Favorites'
 import About from './pages/About'
 import { FavoriteProvider } from './contexts/FavoriteContext'
 import MovieDetail from './components/MovieDetail'
+import Signin from './pages/auth/Signin'
+import Signup from './pages/auth/Signup'
+import ProtectedRoute from './Routes/ProtectedRoute'
 
 const route = createBrowserRouter(
   createRoutesFromElements(
@@ -16,6 +19,8 @@ const route = createBrowserRouter(
       <Route path='favorites' element={<Favorites />}/>
       <Route path='about' element={<About />}/>
       <Route path='movie/:id' element={<MovieDetail />}/>
+      <Route path="signin" element={<ProtectedRoute><Signin /></ProtectedRoute>}/>
+      <Route path="signup" element={<ProtectedRoute><Signup /></ProtectedRoute>}/>
     </Route>
   )
 )

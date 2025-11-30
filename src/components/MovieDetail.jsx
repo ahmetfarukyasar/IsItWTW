@@ -1,14 +1,19 @@
 import { useEffect, useState } from "react"
-import { useParams, useNavigate } from "react-router-dom"
+import { useParams, useNavigate, Link } from "react-router-dom"
 import { useFavorites } from "../contexts/FavoriteContext"
 import axios from "axios"
 import { FaArrowLeft, FaHeart, FaPeopleGroup, FaStar } from "react-icons/fa6"
+import RatingStar from "./RatingStar"
+import CommentsSection from "./CommentsSection"
+import useAuth from "../hooks/useAuth"
+import { useAverageRating } from "../hooks/useAverageRating"
 
 const MovieDetail = () => {
+  const user = useAuth();
   const { id } = useParams()
   const navigate = useNavigate()
   const { favorites, addToFavorites, removeFromFavorites, isInFavorites } = useFavorites()
-
+  const { averageRating, totalVotes } = useAverageRating(id)
   const [movie, setMovie] = useState(null)
   const [loading, setLoading] = useState(true)
 
@@ -68,9 +73,8 @@ const MovieDetail = () => {
             <h1 className="text-3xl sm:text-4xl font-bold">{movie.title}</h1>
             <button
               onClick={handleFavoriteClick}
-              className={`px-4 py-4 rounded-full transition cursor-pointer ${
-                isFavorite ? "bg-red-600 hover:bg-red-700" : "bg-gray-600 hover:bg-gray-700"
-              }`}
+              className={`px-4 py-4 rounded-full transition cursor-pointer ${isFavorite ? "bg-red-600 hover:bg-red-700" : "bg-gray-600 hover:bg-gray-700"
+                }`}
             >
               <FaHeart size={20} />
             </button>
@@ -82,6 +86,7 @@ const MovieDetail = () => {
 
           <p className="text-base sm:text-lg mb-6 leading-relaxed">{movie.overview}</p>
 
+          <h3 className="text-lg sm:text-xl font-semibold mb-2">TMDB:</h3>
           <div className="flex flex-wrap gap-3 sm:gap-4 mb-6">
             <span className="bg-yellow-600 px-3 py-1 rounded flex items-center justify-center gap-2 text-sm sm:text-base">
               <FaStar /> {movie.vote_average?.toFixed(1)}
@@ -89,6 +94,14 @@ const MovieDetail = () => {
             <span className="bg-blue-600 px-3 py-1 rounded flex items-center justify-center gap-2 text-sm sm:text-base">
               <FaPeopleGroup /> {movie.vote_count} vote
             </span>
+          </div>
+          <h3 className="text-lg sm:text-xl font-semibold mb-2">Community:</h3>
+          <div className="flex flex-wrap gap-3 sm:gap-4 mb-6">
+            {averageRating !== null && (
+              <span className="bg-green-600 px-3 py-1 rounded flex items-center justify-center gap-2 text-sm sm:text-base">
+                <FaStar /> {averageRating.toFixed(1)} ({totalVotes} user{totalVotes !== 1 ? 's' : ''})
+              </span>
+            )}
           </div>
 
           <div className="mb-4">
@@ -101,8 +114,22 @@ const MovieDetail = () => {
               ))}
             </div>
           </div>
+
+          <div className="mb-4">
+            <h3 className="text-lg sm:text-xl font-semibold mb-2">Your Rating:</h3>
+            {
+              user
+                ?
+                <div><RatingStar movieId={id} user={user} /></div>
+                :
+                <p>You must <Link to="/signin" className="underline">log in</Link> to rate movies.</p>
+            }
+          </div>
         </div>
       </div>
+
+      <CommentsSection movieId={id} user={user} />
+
     </div>
   )
 }
