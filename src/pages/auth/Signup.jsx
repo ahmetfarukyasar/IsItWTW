@@ -26,7 +26,7 @@ export default function Signup() {
             if (error) throw error;
 
             setForm({ name: "", email: "", password: "" });
-            setToast({ message: "Kayıt başarılı. E-posta ile doğrulamayı kontrol edin.", type: "success" });
+            setToast({ message: "Registered successfully. Check your email to verification.", type: "success" });
         } catch (err) {
             setToast({ message: err.message ?? String(err), type: "error" });
         }
